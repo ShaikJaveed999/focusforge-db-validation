@@ -41,7 +41,7 @@ No table names, column names, or data types were changed.
     └── screenshot_4_foreign_key.png
 ```
 
-`schema/sample_data.sql` and `schema/invalid_data.sql` are the original starter files, kept unchanged. The official starter directory did not include `constraints_test.sql`; the added file contains pgAdmin test instructions and expected SQLSTATEs as SQL comments. The original test statements remain in `schema/invalid_data.sql`.
+`schema/sample_data.sql` and `schema/invalid_data.sql` are the original starter files, kept unchanged. The official starter directory did not include `constraints_test.sql`; the added file contains psql test instructions and expected SQLSTATEs as SQL comments. The original test statements remain in `schema/invalid_data.sql`.
 
 ## Database Setup
 
@@ -68,26 +68,26 @@ The valid sample statements are expected to insert two users, two projects, and 
 
 ## How to Run Constraint Tests
 
-After loading the schema and valid sample data, open `schema/invalid_data.sql` in pgAdmin's Query Tool. Execute each of its four `INSERT` statements separately so each error is visible and independently verifiable. `schema/constraints_test.sql` documents the test workflow and expected SQLSTATEs using comments only; it has no psql-specific commands.
+After loading the schema and valid sample data, run each of the four `INSERT` statements from `schema/invalid_data.sql` separately in the psql terminal so each error is visible and independently verifiable. `schema/constraints_test.sql` documents the test workflow and expected SQLSTATEs using comments only.
 
-The four original invalid statements were manually executed in pgAdmin. Their actual PostgreSQL errors are shown in the screenshot evidence below.
+The four original invalid statements were manually executed in the psql terminal. Their actual PostgreSQL errors are shown in the screenshot evidence below.
 
 ## Expected PostgreSQL Errors
 
-The four manually executed tests produced these PostgreSQL constraint errors:
+The four manually executed tests produced the PostgreSQL errors shown in the screenshots:
 
-| Test | Observed error | SQLSTATE |
+| Test | PostgreSQL error | SQLSTATE |
 |---|---|---:|
 | NULL task title | NOT NULL violation | `23502` |
 | Duplicate `alice@email.com` | UNIQUE violation | `23505` |
 | Priority `10` | CHECK violation | `23514` |
 | Non-existent project ID `999` | FOREIGN KEY violation | `23503` |
 
-The screenshots show SQLSTATE `23502` (NOT NULL), `23505` (UNIQUE), `23514` (CHECK), and `23503` (FOREIGN KEY). The valid sample-data inserts were not independently verified in this environment. A local PostgreSQL 18.4 service was detected, but CLI authentication was unavailable; the invalid test cases were manually executed in pgAdmin.
+The SQLSTATE values in the table identify the corresponding PostgreSQL constraint violation classes; the screenshots show the actual terminal error text. The valid sample-data inserts were not independently verified in this environment. A local PostgreSQL 18.4 service was detected, but CLI authentication was unavailable; the invalid test cases were manually executed in psql.
 
 ## Screenshot Evidence
 
-These genuine pgAdmin captures show each invalid statement and its actual PostgreSQL error:
+These genuine psql terminal captures show each invalid statement and its actual PostgreSQL error:
 
 - [NOT NULL violation — SQLSTATE `23502`](./screenshots/screenshot_1_not_null.png)
 - [UNIQUE violation — SQLSTATE `23505`](./screenshots/screenshot_2_unique.png)
@@ -98,6 +98,6 @@ These genuine pgAdmin captures show each invalid statement and its actual Postgr
 
 - Schema changes: present in `schema/schema.sql`.
 - Original sample and invalid SQL: preserved.
-- Four invalid constraint tests: manually executed in pgAdmin; errors are shown in the screenshots.
+- Four invalid constraint tests: manually executed in psql; errors are shown in the screenshots.
 - Valid sample data verification: not independently run.
-- Four genuine pgAdmin screenshots: present in `screenshots/`.
+- Four genuine psql screenshots: present in `screenshots/`.
