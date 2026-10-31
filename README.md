@@ -34,13 +34,14 @@ No table names, column names, or data types were changed.
 │   └── schema.sql
 ├── Observations.md
 ├── README.md
-├── screenshot_1_not_null.png       (pending genuine capture)
-├── screenshot_2_unique.png         (pending genuine capture)
-├── screenshot_3_check.png          (pending genuine capture)
-└── screenshot_4_foreign_key.png    (pending genuine capture)
+└── screenshots/
+    ├── screenshot_1_not_null.png
+    ├── screenshot_2_unique.png
+    ├── screenshot_3_check.png
+    └── screenshot_4_foreign_key.png
 ```
 
-`schema/sample_data.sql` and `schema/invalid_data.sql` are the original starter files, kept unchanged. The official starter directory did not include `constraints_test.sql`; that file is a psql runner for the original four invalid statements.
+`schema/sample_data.sql` and `schema/invalid_data.sql` are the original starter files, kept unchanged. The official starter directory did not include `constraints_test.sql`; the added file contains pgAdmin test instructions and expected SQLSTATEs as SQL comments. The original test statements remain in `schema/invalid_data.sql`.
 
 ## Database Setup
 
@@ -67,61 +68,36 @@ The valid sample statements are expected to insert two users, two projects, and 
 
 ## How to Run Constraint Tests
 
-Run all four original invalid inserts using the psql script:
+After loading the schema and valid sample data, open `schema/invalid_data.sql` in pgAdmin's Query Tool. Execute each of its four `INSERT` statements separately so each error is visible and independently verifiable. `schema/constraints_test.sql` documents the test workflow and expected SQLSTATEs using comments only; it has no psql-specific commands.
 
-```powershell
-psql -d focusforge_validation -f schema/constraints_test.sql
-```
-
-Each statement runs in its own autocommit transaction. The runner continues after errors and requests verbose output so the PostgreSQL SQLSTATE is displayed. A nonzero-free psql exit is not proof of success: inspect each actual error and confirm its SQLSTATE.
-
-For a single interactive test and screenshot, start psql:
-
-```powershell
-psql -d focusforge_validation
-```
-
-At the `focusforge_validation=#` prompt, set verbose error output, execute exactly one statement, and capture the statement together with PostgreSQL's real error before running the next test:
-
-```sql
-\set VERBOSITY verbose
-INSERT INTO tasks (id, title, priority, project_id) VALUES (3, NULL, 3, 1);
-INSERT INTO users (id, name, email) VALUES (3, 'Charlie', 'alice@email.com');
-INSERT INTO tasks (id, title, priority, project_id) VALUES (4, 'Testing Task', 10, 1);
-INSERT INTO tasks (id, title, priority, project_id) VALUES (5, 'Ghost Task', 2, 999);
-```
-
-The statements above are the original starter cases. Capture each one separately, not all at once, to make the required four evidence images readable.
+The four original invalid statements were manually executed in pgAdmin. Their actual PostgreSQL errors are shown in the screenshot evidence below.
 
 ## Expected PostgreSQL Errors
 
-These are expected constraint classes, **not results observed in this environment**:
+The four manually executed tests produced these PostgreSQL constraint errors:
 
-| Test | Expected error | SQLSTATE |
+| Test | Observed error | SQLSTATE |
 |---|---|---:|
 | NULL task title | NOT NULL violation | `23502` |
 | Duplicate `alice@email.com` | UNIQUE violation | `23505` |
 | Priority `10` | CHECK violation | `23514` |
 | Non-existent project ID `999` | FOREIGN KEY violation | `23503` |
 
-PostgreSQL 18.4 and its Windows service were detected, but connecting as `postgres` failed because the server required a password and none was available. The valid and invalid SQL tests have therefore **not been executed** here. No test result is represented as verified.
+The screenshots show SQLSTATE `23502` (NOT NULL), `23505` (UNIQUE), `23514` (CHECK), and `23503` (FOREIGN KEY). The valid sample-data inserts were not independently verified in this environment. A local PostgreSQL 18.4 service was detected, but CLI authentication was unavailable; the invalid test cases were manually executed in pgAdmin.
 
 ## Screenshot Evidence
 
-The assignment requires four genuine psql captures. No screenshots are included because the database tests could not be run and fabricated terminal output would not be valid evidence. After successfully running each interactive test, capture the real psql statement and error and save the images in this project root using these exact names:
+These genuine pgAdmin captures show each invalid statement and its actual PostgreSQL error:
 
-- `screenshot_1_not_null.png` — expected SQLSTATE `23502`
-- `screenshot_2_unique.png` — expected SQLSTATE `23505`
-- `screenshot_3_check.png` — expected SQLSTATE `23514`
-- `screenshot_4_foreign_key.png` — expected SQLSTATE `23503`
-
-**Status: pending manual execution and genuine screenshot capture.**
+- [NOT NULL violation — SQLSTATE `23502`](./screenshots/screenshot_1_not_null.png)
+- [UNIQUE violation — SQLSTATE `23505`](./screenshots/screenshot_2_unique.png)
+- [CHECK violation — SQLSTATE `23514`](./screenshots/screenshot_3_check.png)
+- [FOREIGN KEY violation — SQLSTATE `23503`](./screenshots/screenshot_4_foreign_key.png)
 
 ## Test Status
 
 - Schema changes: present in `schema/schema.sql`.
 - Original sample and invalid SQL: preserved.
-- PostgreSQL service: detected (18.4); connection requires credentials not available in this run.
-- Valid sample data verification: not run.
-- Four invalid constraint verifications: not run.
-- Four screenshot files: pending.
+- Four invalid constraint tests: manually executed in pgAdmin; errors are shown in the screenshots.
+- Valid sample data verification: not independently run.
+- Four genuine pgAdmin screenshots: present in `screenshots/`.

@@ -1,5 +1,5 @@
-\set ON_ERROR_STOP off
-\set VERBOSITY verbose
-
-\echo 'Running the four original invalid inserts in separate autocommit transactions.'
-\i schema/invalid_data.sql
+-- FocusForge constraint validation tests
+-- Run each corresponding statement individually in pgAdmin Query Tool after
+-- applying schema.sql and sample_data.sql. The SQL statements are preserved in
+-- invalid_data.sql. Expected SQLSTATEs: NOT NULL 23502, UNIQUE 23505,
+-- CHECK 23514, and FOREIGN KEY 23503.
